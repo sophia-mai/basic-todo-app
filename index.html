@@ -24,7 +24,7 @@
       <a href="#/active">Active</a>
       <a href="#/completed">Completed</a>
     </nav>
-    <main class="max-w-lg mx-auto font-thin bg-white shadow-md">
+    <main class="max-w-lg mx-auto font-thin bg-white shadow-md divide-y">
       <input
         id="new-todo"
         placeholder="What needs to be done?"
@@ -33,8 +33,25 @@
       />
       <section
         id="todo-list"
-        class="flex flex-col w-full text-xl font-normal"
-      ></section>
+        class="flex flex-col w-full text-xl font-normal divide-y"
+      >
+        <div class="p-4 todo-item">
+          <div class="todo-text">Buy Milk</div>
+          <input class="hidden todo-edit" value="Buy Milk" />
+        </div>
+        <div class="p-4 todo-item">
+          <div class="todo-text">Buy Jam</div>
+          <input class="hidden todo-edit" value="Buy Jam" />
+        </div>
+      </section>
+      <section
+        id="todo-actions"
+        class="flex justify-between p-4 text-sm text-gray-600"
+      >
+        <span id="todo-count">2 items left</span>
+        <button id="mark-all-completed">Mark All As Completed</button>
+        <button id="clear-completed">Clear Completed</button>
+      </section>
     </main>
     <footer
       class="flex flex-col justify-center items-center mt-10 text-xs text-gray-500 font-extralight max-w-lg mx-auto"
