@@ -38,6 +38,29 @@
         class="flex flex-col w-full text-xl font-normal divide-y"
       >
         <!-- Todos will go here -->
+        <div class="p-4 todo-item">
+          <div class="todo-text">Buy milk</div>
+          <input class="hidden todo-edit" value="Buy milk" />
+        </div>
+        <div class="p-4 todo-item">
+          <div class="todo-text">Buy bread</div>
+          <input class="hidden todo-edit" value="Buy bread" />
+        </div>
+      </section>
+      <section
+        id="todo-actions"
+        class="flex justify-between p-4 text-sm text-gray-600"
+      >
+        <span id="todo-count">2 items left</span>
+        <button
+          id="mark-all-completed"
+          aria-label="Mark all tasks as completed"
+        >
+          Mark all as complete
+        </button>
+        <button id="clear-completed" aria-label="Clear completed tasks">
+          Clear completed
+        </button>
       </section>
     </main>
     <footer
