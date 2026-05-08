@@ -4,61 +4,10 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>basic-todo-app</title>
+    <title>ToDo App</title>
   </head>
-  <body class="bg-stone-100">
-    <header class="py-4 mt-5 text-center font-thin max-w-lg mx-auto">
-      <h1 class="font-sans text-7xl text-rose-700">~ todo ~</h1>
-    </header>
-    <nav
-      id="todo-nav"
-      class="flex items-center justify-center py-2 gap-3 max-w-lg mx-auto"
-      role="navigation"
-    >
-      <a
-        href="#/"
-        class="underline underline-offset-4 decoration-rose-800 decoration-2 p-1"
-        role="button"
-        >All</a
-      >
-      <a href="#/active">Active</a>
-      <a href="#/completed">Completed</a>
-    </nav>
-    <main class="max-w-lg mx-auto font-thin bg-white shadow-md divide-y">
-      <input
-        id="new-todo"
-        placeholder="What needs to be done?"
-        autofocus
-        class="w-full p-4 text-2xl italic outline-0 focus:outline-1 focus:outline-offset-0 focus:outline-rose-700"
-      />
-      <section
-        id="todo-list"
-        class="flex flex-col w-full text-xl font-normal divide-y"
-      >
-        <div class="p-4 todo-item">
-          <div class="todo-text">Buy Milk</div>
-          <input class="hidden todo-edit" value="Buy Milk" />
-        </div>
-        <div class="p-4 todo-item">
-          <div class="todo-text">Buy Jam</div>
-          <input class="hidden todo-edit" value="Buy Jam" />
-        </div>
-      </section>
-      <section
-        id="todo-actions"
-        class="flex justify-between p-4 text-sm text-gray-600"
-      >
-        <span id="todo-count">2 items left</span>
-        <button id="mark-all-completed">Mark All As Completed</button>
-        <button id="clear-completed">Clear Completed</button>
-      </section>
-    </main>
-    <footer
-      class="flex flex-col justify-center items-center mt-10 text-xs text-gray-500 font-extralight max-w-lg mx-auto"
-    >
-      <div>Click to complete a todo</div>
-      <div>Double-click to edit a todo</div>
-    </footer>
+  <body>
+    <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
