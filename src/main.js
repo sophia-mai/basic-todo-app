@@ -1,74 +1,88 @@
-import "./style.css";
+import "../style.css";
 
+// Get the necessary DOM elements
+const todoListElement = document.getElementById("todo-list");
+const inputNewTodo = document.getElementById("new-todo");
+const todoNav = document.getElementById("todo-nav");
+
+// Define the state of our app
 const todos = [
   { id: 1, text: "Buy milk", completed: false },
-  { id: 2, text: "buy bread", completed: false },
-  { id: 1, text: "Buy jam", completed: true },
+  { id: 2, text: "Buy bread", completed: false },
+  { id: 3, text: "Buy jam", completed: true },
 ];
-
 let nextTodoId = 4;
-let filter = "all"; // can be all, active, completed
+let filter = "all"; // can be 'all', 'active', or 'completed'
 
-document.addEventListener("DOMContentLoaded", renderTodos);
-
+// Function to render the todos based on the current filter
 function renderTodos() {
-  const todoListElement = document.getElementById("todo-list");
+  // Clear the current list to avoid duplicates
   todoListElement.innerHTML = "";
 
-  const filteredTodos = [];
+  // Filter todos based on the current filter setting
+  let filteredTodos = [];
   for (let i = 0; i < todos.length; i++) {
     const todo = todos[i];
     if (filter === "all") {
       filteredTodos.push(todo);
-    } else if (filter === "completed" && todo.completed) {
+    } else if (filter === "completed" && todo.completed === true) {
       filteredTodos.push(todo);
-    } else if (filter === "active" && !todo.completed) {
+    } else if (filter === "active" && todo.completed === false) {
       filteredTodos.push(todo);
     }
   }
 
+  // Loop through the filtered todos and add them to the DOM
   for (let i = 0; i < filteredTodos.length; i++) {
     const todo = filteredTodos[i];
+
     const todoItem = document.createElement("div");
     todoItem.classList.add("p-4", "todo-item");
-    todoListElement.appendChild(todoItem);
 
     const todoText = document.createElement("div");
+    todoText.id = `todo-text-${todo.id}`;
     todoText.classList.add("todo-text");
     if (todo.completed) {
       todoText.classList.add("line-through");
     }
-    todoText.textContent = todo.text;
+    todoText.innerText = todo.text;
     todoItem.appendChild(todoText);
 
     const todoEdit = document.createElement("input");
     todoEdit.classList.add("hidden", "todo-edit");
     todoEdit.value = todo.text;
     todoItem.appendChild(todoEdit);
-  }
 
-  const activeHref =
-    filter === "active"
-      ? todoNav.children[1].href
-      : filter === "completed"
-        ? todoNav.children[2].href
-        : todoNav.children[0].href;
-  renderTodoNavBar(activeHref);
+    todoListElement.appendChild(todoItem);
+  }
 }
 
-function handleNewTodoKeyDown(event) {
+// Function to handle adding a new todo
+function handleKeyDownToCreateNewTodo(event) {
   const newTodoInput = event.target;
   const todoText = newTodoInput.value.trim();
   if (event.key === "Enter" && todoText !== "") {
     todos.push({ id: nextTodoId++, text: todoText, completed: false });
-    newTodoInput.value = "";
+    newTodoInput.value = ""; // clear the input
     renderTodos();
   }
 }
 
-const newTodoInput = document.getElementById("new-todo");
-newTodoInput.addEventListener("keydown", handleNewTodoKeyDown);
+// Function to handle marking a todo as completed
+function handleClickOnNavbar(event) {
+  // if the clicked element is an anchor tag
+  if (event.target.tagName === "A") {
+    const hrefValue = event.target.href;
+    const action = hrefValue.split("/").pop();
+    filter = action === "" ? "all" : action;
 
+    // render the app UI
+    renderTodoNavBar(hrefValue);
+    renderTodos();
+  }
+}
+
+// Function to update the navbar anchor elements
 function renderTodoNavBar(href) {
   const elements = todoNav.children;
   for (let i = 0; i < elements.length; i++) {
@@ -91,15 +105,24 @@ function renderTodoNavBar(href) {
   }
 }
 
-function handleClickOnNavbar(event) {
-  if (event.target.tagName === "A") {
-    const hrefValue = event.target.href;
-    const action = hrefValue.split("/").pop();
-    filter = action === "" ? "all" : action;
+// Function to toggle the completed status of a todo
+function handleClickOnTodoList(event) {
+  if (event.target.id.includes("todo-text")) {
+    const todoId = event.target.id.split("-").pop();
+    const todoIdNumber = Number(todoId);
+
+    for (let i = 0; i < todos.length; i++) {
+      if (todos[i].id === todoIdNumber) {
+        todos[i].completed = !todos[i].completed;
+      }
+    }
+
     renderTodos();
-    renderTodoNavBar(hrefValue);
   }
 }
 
-const todoNav = document.getElementById("todo-nav");
+// Add the event listeners
+todoListElement.addEventListener("click", handleClickOnTodoList);
+inputNewTodo.addEventListener("keydown", handleKeyDownToCreateNewTodo);
 todoNav.addEventListener("click", handleClickOnNavbar);
+document.addEventListener("DOMContentLoaded", renderTodos);
