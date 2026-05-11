@@ -14,47 +14,53 @@ const todos = [
 let nextTodoId = 4;
 let filter = "all"; // can be 'all', 'active', or 'completed'
 
+// Helper function to create todo text element
+const createTodoText = (todo) => {
+  const todoText = document.createElement("div");
+  todoText.id = `todo-text-${todo.id}`;
+  todoText.classList.add(
+    "todo-text",
+    ...(todo.completed ? ["line-through"] : []),
+  );
+  todoText.innerText = todo.text;
+  return todoText;
+};
+
+// Helper function to create todo edit input element
+const createTodoEditInput = (todo) => {
+  const todoEdit = document.createElement("input");
+  todoEdit.classList.add("hidden", "todo-edit");
+  todoEdit.value = todo.text;
+  return todoEdit;
+};
+
+// Helper function to create a todo item
+const createTodoItem = (todo) => {
+  const todoItem = document.createElement("div");
+  todoItem.classList.add("p-4", "todo-item");
+  todoItem.append(createTodoText(todo), createTodoEditInput(todo));
+  return todoItem;
+};
+
+// Helper function to filter todos based on the current filter setting
+const getFilteredTodos = () => {
+  return todos.filter((todo) => {
+    if (filter === "all") return true;
+    if (filter === "completed") return todo.completed;
+    if (filter === "active") return !todo.completed;
+    return false;
+  });
+};
+
 // Function to render the todos based on the current filter
 function renderTodos() {
   // Clear the current list to avoid duplicates
   todoListElement.innerHTML = "";
 
-  // Filter todos based on the current filter setting
-  let filteredTodos = [];
-  for (let i = 0; i < todos.length; i++) {
-    const todo = todos[i];
-    if (filter === "all") {
-      filteredTodos.push(todo);
-    } else if (filter === "completed" && todo.completed === true) {
-      filteredTodos.push(todo);
-    } else if (filter === "active" && todo.completed === false) {
-      filteredTodos.push(todo);
-    }
-  }
-
-  // Loop through the filtered todos and add them to the DOM
-  for (let i = 0; i < filteredTodos.length; i++) {
-    const todo = filteredTodos[i];
-
-    const todoItem = document.createElement("div");
-    todoItem.classList.add("p-4", "todo-item");
-
-    const todoText = document.createElement("div");
-    todoText.id = `todo-text-${todo.id}`;
-    todoText.classList.add("todo-text");
-    if (todo.completed) {
-      todoText.classList.add("line-through");
-    }
-    todoText.innerText = todo.text;
-    todoItem.appendChild(todoText);
-
-    const todoEdit = document.createElement("input");
-    todoEdit.classList.add("hidden", "todo-edit");
-    todoEdit.value = todo.text;
-    todoItem.appendChild(todoEdit);
-
-    todoListElement.appendChild(todoItem);
-  }
+  // Get the filtered todos and render them
+  const filteredTodos = getFilteredTodos();
+  const todoElements = filteredTodos.map(createTodoItem);
+  todoListElement.append(...todoElements);
 }
 
 // Function to handle adding a new todo
