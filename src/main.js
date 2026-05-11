@@ -59,6 +59,12 @@ const addTodo = (todos, newTodoText) => [
   { id: nextTodoId++, text: newTodoText, completed: false },
 ];
 
+// Helper function to toggle the completed status of a todo item
+const toggleTodo = (todos, todoId) =>
+  todos.map((todo) =>
+    todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
+  );
+
 // Function to render the todos based on the current filter
 const renderTodos = () => {
   todoListElement.replaceChildren(
@@ -78,60 +84,48 @@ const handleKeyDownToCreateNewTodo = (event) => {
   }
 };
 
-// Function to handle filter selection from the navbar
-const handleClickOnNavbar = (event) => {
-  // if the clicked element is an anchor tag
-  if (event.target.tagName === "A") {
-    const hrefValue = event.target.href;
-    const action = hrefValue.split("/").pop();
-    filter = action === "" ? "all" : action;
+// Helper function to update the class list of a navbar element
+const updateClassList = (element, isActive) => {
+  const classes = [
+    "underline",
+    "underline-offset-4",
+    "decoration-rose-800",
+    "decoration-2",
+  ];
+  if (isActive) {
+    element.classList.add(...classes);
+  } else {
+    element.classList.remove(...classes);
+  }
+};
 
-    // render the app UI
-    renderTodoNavBar(hrefValue);
+// Helper function to render the navbar anchor elements
+const renderTodoNavBar = (href) => {
+  Array.from(todoNav.children).forEach((element) => {
+    updateClassList(element, element.href === href);
+  });
+};
+
+// Event handler to filter the todos based on the navbar selection
+const handleClickOnNavbar = (event) => {
+  if (event.target.tagName === "A") {
+    const href = event.target.href;
+    filter = href.split("/").pop() || "all";
+    renderTodos();
+    renderTodoNavBar(href);
+  }
+};
+
+// Event handler to toggle the completed status of a todo item
+const handleClickOnTodoList = (event) => {
+  if (event.target.id.includes("todo-text")) {
+    const todoId = event.target.id.split("-").pop();
+    todos = toggleTodo(todos, Number(todoId));
     renderTodos();
   }
 };
 
-// Function to update the navbar anchor elements
-function renderTodoNavBar(href) {
-  const elements = todoNav.children;
-  for (let i = 0; i < elements.length; i++) {
-    const element = elements[i];
-    if (element.href === href) {
-      element.classList.add(
-        "underline",
-        "underline-offset-4",
-        "decoration-rose-800",
-        "decoration-2",
-      );
-    } else {
-      element.classList.remove(
-        "underline",
-        "underline-offset-4",
-        "decoration-rose-800",
-        "decoration-2",
-      );
-    }
-  }
-}
-
-// Function to toggle the completed status of a todo
-function handleClickOnTodoList(event) {
-  if (event.target.id.includes("todo-text")) {
-    const todoId = event.target.id.split("-").pop();
-    const todoIdNumber = Number(todoId);
-
-    for (let i = 0; i < todos.length; i++) {
-      if (todos[i].id === todoIdNumber) {
-        todos[i].completed = !todos[i].completed;
-      }
-    }
-
-    renderTodos();
-  }
-}
-
-// Add the event listeners
+// Event listeners
 todoListElement.addEventListener("click", handleClickOnTodoList);
 inputNewTodo.addEventListener("keydown", handleKeyDownToCreateNewTodo);
 todoNav.addEventListener("click", handleClickOnNavbar);
