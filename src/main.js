@@ -36,6 +36,14 @@ const createTodoApp = () => {
       filter = newFilter;
     },
     getTodos: () => filterTodos(),
+    markAllCompleted: () => {
+      todos = todos.map((todo) => ({ ...todo, completed: true }));
+    },
+    deleteCompleted: () => {
+      todos = todos.filter((todo) => !todo.completed);
+    },
+    getNumberOfActiveTodos: () =>
+      todos.reduce((acc, todo) => acc + !todo.completed, 0),
   };
 };
 
@@ -45,6 +53,9 @@ const todoApp = createTodoApp();
 const todoListElement = document.getElementById("todo-list");
 const inputNewTodo = document.getElementById("new-todo");
 const todoNav = document.getElementById("todo-nav");
+const markAllCompleted = document.getElementById("mark-all-completed");
+const clearCompleted = document.getElementById("clear-completed");
+const activeTodosCount = document.getElementById("todo-count");
 
 // Helper function to create todo text element
 const createTodoText = (todo) => {
@@ -80,6 +91,10 @@ const renderTodos = () => {
 
   const todoElements = todoApp.getTodos().map(createTodoItem);
   todoListElement.append(...todoElements);
+
+  activeTodosCount.textContent = `${todoApp.getNumberOfActiveTodos()} item${
+    todoApp.getNumberOfActiveTodos() === 1 ? "" : "s"
+  } left`;
 };
 
 // Event handler to create a new todo item
@@ -133,8 +148,22 @@ const handleClickOnTodoList = (event) => {
   }
 };
 
+// Event handler to mark all todos as completed
+const handleMarkAllCompleted = () => {
+  todoApp.markAllCompleted();
+  renderTodos();
+};
+
+// Event handler to clear all completed todos
+const handleClearCompleted = () => {
+  todoApp.deleteCompleted();
+  renderTodos();
+};
+
 // Add the event listeners
 todoListElement.addEventListener("click", handleClickOnTodoList);
 inputNewTodo.addEventListener("keydown", handleKeyDownToCreateNewTodo);
 todoNav.addEventListener("click", handleClickOnNavbar);
+markAllCompleted.addEventListener("click", handleMarkAllCompleted);
+clearCompleted.addEventListener("click", handleClearCompleted);
 document.addEventListener("DOMContentLoaded", renderTodos);
