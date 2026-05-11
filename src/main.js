@@ -6,7 +6,7 @@ const inputNewTodo = document.getElementById("new-todo");
 const todoNav = document.getElementById("todo-nav");
 
 // Define the state of our app
-const todos = [
+let todos = [
   { id: 1, text: "Buy milk", completed: false },
   { id: 2, text: "Buy bread", completed: false },
   { id: 3, text: "Buy jam", completed: true },
@@ -43,39 +43,43 @@ const createTodoItem = (todo) => {
 };
 
 // Helper function to filter todos based on the current filter setting
-const getFilteredTodos = () => {
-  return todos.filter((todo) => {
-    if (filter === "all") return true;
-    if (filter === "completed") return todo.completed;
-    if (filter === "active") return !todo.completed;
-    return false;
-  });
+const filterTodos = (todos, filter) => {
+  if (filter === "active") {
+    return todos.filter((todo) => !todo.completed);
+  } else if (filter === "completed") {
+    return todos.filter((todo) => todo.completed);
+  } else {
+    return [...todos];
+  }
 };
 
+// Helper function to create a new array with the existing todos and a new todo item
+const addTodo = (todos, newTodoText) => [
+  ...todos,
+  { id: nextTodoId++, text: newTodoText, completed: false },
+];
+
 // Function to render the todos based on the current filter
-function renderTodos() {
-  // Clear the current list to avoid duplicates
-  todoListElement.innerHTML = "";
+const renderTodos = () => {
+  todoListElement.replaceChildren(
+    ...filterTodos(todos, filter).map(createTodoItem),
+  );
+};
 
-  // Get the filtered todos and render them
-  const filteredTodos = getFilteredTodos();
-  const todoElements = filteredTodos.map(createTodoItem);
-  todoListElement.append(...todoElements);
-}
-
-// Function to handle adding a new todo
-function handleKeyDownToCreateNewTodo(event) {
-  const newTodoInput = event.target;
-  const todoText = newTodoInput.value.trim();
-  if (event.key === "Enter" && todoText !== "") {
-    todos.push({ id: nextTodoId++, text: todoText, completed: false });
-    newTodoInput.value = ""; // clear the input
-    renderTodos();
+// Event handler to create a new todo item
+const handleKeyDownToCreateNewTodo = (event) => {
+  if (event.key === "Enter") {
+    const todoText = event.target.value.trim();
+    if (todoText) {
+      todos = addTodo(todos, todoText);
+      event.target.value = ""; // Clear the input
+      renderTodos();
+    }
   }
-}
+};
 
-// Function to handle marking a todo as completed
-function handleClickOnNavbar(event) {
+// Function to handle filter selection from the navbar
+const handleClickOnNavbar = (event) => {
   // if the clicked element is an anchor tag
   if (event.target.tagName === "A") {
     const hrefValue = event.target.href;
@@ -86,7 +90,7 @@ function handleClickOnNavbar(event) {
     renderTodoNavBar(hrefValue);
     renderTodos();
   }
-}
+};
 
 // Function to update the navbar anchor elements
 function renderTodoNavBar(href) {
